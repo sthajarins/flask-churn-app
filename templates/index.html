@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Churn Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            /* Faded background with white overlay */
+            background: linear-gradient(rgba(255,255,255,0.6), rgba(255,255,255,0.6)),
+                        url("{{ url_for('static', filename='background.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 900px;
+            margin: 50px auto;
+            background: #fff; /* Keeps form fully opaque */
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 15px 30px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input[type="number"], input[type="text"], select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            grid-column: span 2;
+            padding: 12px;
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #218838;
+        }
+
+        .result {
+            grid-column: span 2;
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Churn Prediction</h2>
+        <form action="/predict" method="post">
+            <!-- Numeric features -->
+            <div>
+                <label>SeniorCitizen (0 or 1):</label>
+                <input type="number" name="SeniorCitizen">
+            </div>
+            <div>
+                <label>Tenure (months):</label>
+                <input type="number" name="tenure">
+            </div>
+            <div>
+                <label>MonthlyCharges:</label>
+                <input type="text" name="MonthlyCharges">
+            </div>
+            <div>
+                <label>TotalCharges:</label>
+                <input type="text" name="TotalCharges">
+            </div>
+
+            <!-- Binary features (0 or 1) -->
+            <div>
+                <label>Gender Male:</label>
+                <select name="gender_Male">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <div>
+                <label>Partner Yes:</label>
+                <select name="Partner_Yes">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <div>
+                <label>Dependents Yes:</label>
+                <select name="Dependents_Yes">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <div>
+                <label>PhoneService Yes:</label>
+                <select name="PhoneService_Yes">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <div>
+                <label>MultipleLines No phone service:</label>
+                <select name="MultipleLines_No phone service">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <div>
+                <label>MultipleLines Yes:</label>
+                <select name="MultipleLines_Yes">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <div>
+                <label>InternetService Fiber optic:</label>
+                <select name="InternetService_Fiber optic">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <div>
+                <label>InternetService No:</label>
+                <select name="InternetService_No">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <!-- Repeat same pattern for remaining binary features -->
+            <div>
+                <label>OnlineSecurity No internet service:</label>
+                <select name="OnlineSecurity_No internet service">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <div>
+                <label>OnlineSecurity Yes:</label>
+                <select name="OnlineSecurity_Yes">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <div>
+                <label>OnlineBackup No internet service:</label>
+                <select name="OnlineBackup_No internet service">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <div>
+                <label>OnlineBackup Yes:</label>
+                <select name="OnlineBackup_Yes">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <div>
+                <label>DeviceProtection No internet service:</label>
+                <select name="DeviceProtection_No internet service">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <div>
+                <label>DeviceProtection Yes:</label>
+                <select name="DeviceProtection_Yes">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <div>
+                <label>TechSupport No internet service:</label>
+                <select name="TechSupport_No internet service">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <div>
+                <label>TechSupport Yes:</label>
+                <select name="TechSupport_Yes">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <div>
+                <label>StreamingTV No internet service:</label>
+                <select name="StreamingTV_No internet service">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <div>
+                <label>StreamingTV Yes:</label>
+                <select name="StreamingTV_Yes">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <div>
+                <label>StreamingMovies No internet service:</label>
+                <select name="StreamingMovies_No internet service">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <div>
+                <label>StreamingMovies Yes:</label>
+                <select name="StreamingMovies_Yes">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <div>
+                <label>Contract One year:</label>
+                <select name="Contract_One year">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <div>
+                <label>Contract Two year:</label>
+                <select name="Contract_Two year">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <div>
+                <label>PaperlessBilling Yes:</label>
+                <select name="PaperlessBilling_Yes">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <div>
+                <label>PaymentMethod Credit card (automatic):</label>
+                <select name="PaymentMethod_Credit card (automatic)">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <div>
+                <label>PaymentMethod Electronic check:</label>
+                <select name="PaymentMethod_Electronic check">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <div>
+                <label>PaymentMethod Mailed check:</label>
+                <select name="PaymentMethod_Mailed check">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+
+            <!-- Submit button -->
+            <input type="submit" value="Predict">
+
+            <!-- Prediction result -->
+            {% if prediction_text %}
+                <div class="result">{{ prediction_text }}</div>
+            {% endif %}
+        </form>
+    </div>
+</body>
+</html>
